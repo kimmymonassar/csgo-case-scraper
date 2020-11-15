@@ -1,0 +1,21 @@
+{
+  "name": "csgo-case-scraper",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "prod": "NODE_ENV=production node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "boolean": "^3.0.2",
+    "cheerio": "^1.0.0-rc.3",
+    "mongodb": "^3.6.3",
+    "nanoid": "^3.1.16",
+    "puppeteer": "^5.4.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "dotenv": "^8.2.0"
+  }
+}
