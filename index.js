@@ -1,4 +1,4 @@
-require('./config/envLoader');
+require('./config/envLoader')
 const puppeteer = require("puppeteer");
 const { boolean } = require('boolean');
 const getCases = require('./util/getCases');
@@ -6,6 +6,7 @@ const getNormalCaseContents = require('./util/getCaseContents');
 const getSpecialItems = require('./util/getSpecialItems');
 
 const uri = `${process.env.MONGODB_URL}:${process.env.MONGO_PORT}`;
+const puppeteerWait = process.env.PUPPETEER_WAIT_UNTIL;
 
 (async () => {
   const browser = await puppeteer.launch({ 
@@ -25,17 +26,15 @@ const uri = `${process.env.MONGODB_URL}:${process.env.MONGO_PORT}`;
   });
 
   await page.goto(`${process.env.SCRAPE_URL}`, {
-    waitUntil: 'domcontentloaded',
+    waitUntil: puppeteerWait,
   });
 
   const startPageContent = await page.content();
   const cases = getCases(startPageContent);
 
-  console.log(`Total cases: ${cases.length}`);
-
   for (let i = 0; i < cases.length; i++) {
     await page.goto(cases[i].contentLink, {
-        waitUntil: 'domcontentloaded',
+        waitUntil: puppeteerWait,
     });
     const casePageContent = await page.content();
     const caseContents = getNormalCaseContents(casePageContent, cases[i].name);
@@ -73,6 +72,7 @@ const uri = `${process.env.MONGODB_URL}:${process.env.MONGO_PORT}`;
       const db = await client.db(process.env.MONGO_DB_NAME);
       // data must be array
       await db.collection(process.env.MONGO_COLLECTION_NAME).insertMany(cases);
+      console.log(`Added ${cases.length} to DB`)
     } catch (e) {
       console.error(`Function addJSONBlobToDataBase threw eror: ${e}`);
     } finally {

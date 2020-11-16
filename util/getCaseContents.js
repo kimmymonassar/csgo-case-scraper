@@ -25,17 +25,6 @@ function getNormalCaseContents(pageContent, caseName) {
           gunMarketLink: $(item).find('.market-button-skin').attr('href'),
           fromCase: caseName
         })
-        console.log({
-          id,
-          name,
-          rarity: $(item).find('.quality > p').text().split(' ')[0],
-          statTrakable: !!$(item).find('.stattrak > p').text().split(' ')[0],
-          image: $(item).find('a > img').attr('src'),
-          inspectInGame: $(item).find('.inspect-button-skin').attr('href'),
-          inspectInGameText: `Inspect ${name} in game (Factory new)`,
-          gunMarketLink: $(item).find('.market-button-skin').attr('href'),
-          fromCase: caseName
-        })
       }
     });
   
