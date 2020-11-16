@@ -16,6 +16,7 @@ const puppeteerWait = process.env.PUPPETEER_WAIT_UNTIL;
   await page.setViewport({ width: 1920, height: 1080 });
   await page.setRequestInterception(true);
   
+  // Block puppeteer from waiting for downloads of non essential resources like CSS, font, scripts.
   page.on('request', (req) => {
       if(req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image' || req.resourceType() === "script"){
           req.abort();
@@ -70,9 +71,13 @@ const puppeteerWait = process.env.PUPPETEER_WAIT_UNTIL;
         useUnifiedTopology: true,
       });
       const db = await client.db(process.env.MONGO_DB_NAME);
-      // data must be array
+
+      // clear old collection
+      await db.collection(process.env.MONGO_COLLECTION_NAME).deleteMany({});
+      // insert the new items
       await db.collection(process.env.MONGO_COLLECTION_NAME).insertMany(cases);
-      console.log(`Added ${cases.length} to DB`)
+
+      console.log(`Added ${cases.length} cases to DB`)
     } catch (e) {
       console.error(`Function addJSONBlobToDataBase threw eror: ${e}`);
     } finally {
@@ -82,5 +87,9 @@ const puppeteerWait = process.env.PUPPETEER_WAIT_UNTIL;
     }
   }
 
-  addJSONBlobToDataBase();
+  if(Array.isArray(cases) || cases.length) {
+    addJSONBlobToDataBase();
+  } else {
+    console.log(`Cases array is empty or not of type array, skipping save to DB`);
+  }
 })();

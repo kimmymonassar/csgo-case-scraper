@@ -9,7 +9,7 @@ function getSpecialItems(pageContent, caseName) {
       const name = $(item).find('h3').text();
       const id = nanoid();
 
-      if (name) {
+      if (name && !name.includes(caseName)) {
         const rarityValue = () => {
           const rarity = $(item).find('.quality > p').text().split(' ')[0];
           if (rarity === 'Extraordinary || Covert') {
